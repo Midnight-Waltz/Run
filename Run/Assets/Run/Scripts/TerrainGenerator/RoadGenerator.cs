@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TerrainGenerator;
 
-namespace RoadGenerator{
+namespace TerrainGenerator{
     /// <summary>
     /// 路径类型
     /// </summary>
@@ -38,8 +39,6 @@ namespace RoadGenerator{
         }
 
         private int pathMaxCount = 200;
-
-        private float turnAngle = 0;
 
         [SerializeField]
         public GameObject[] pathStartPrefab;
@@ -81,14 +80,14 @@ namespace RoadGenerator{
         {
             pathTypes = new pathType[]{
                 new pathType("Straight", pathStraightPrefab, 50, 6, 2),
-                new pathType("Corner", pathCornerPrefab, 10, 2),
-                new pathType("CornerLeft", pathCornerLeftPrefab, 10, 2),
+                new pathType("Corner", pathCornerPrefab, 20, 2),
+                new pathType("CornerLeft", pathCornerLeftPrefab, 20, 2),
                 new pathType("Slope", pathSlopePrefab, 5, 6, 5),
                 new pathType("SlopeDown", pathSlopeDownPrefab, 5, 6, 2),
                 new pathType("Platform", pathPlatformPrefab, 5),
                 new pathType("Bridge", bridgeStart, 10)
             };
-            GeneratePaths();
+            StartCoroutine(GeneratePaths());
         }
 
         // Update is called once per frame
@@ -175,33 +174,34 @@ namespace RoadGenerator{
                 case 3:
                 case 4:
                 case 5:
+                    // 生成直道、坡道、平台
                     for (int j = 0;j < generateCount; j++)
                     {
                         // 获取last_path下LinkPoint object的位置
                         Transform linkPoint = last_path.transform.Find("LinkPoint");
-                        // 实例化一个pathPrefab, 位置为linkPoint的位置, 旋转为linkPoint的旋转
-                        GameObject path = Instantiate(pathPrefabs[UnityEngine.Random.Range(0, pathPrefabs.Length)], linkPoint.position, linkPoint.rotation);
+                        GameObject path = InstantiatePath(pathPrefabs[UnityEngine.Random.Range(0, pathPrefabs.Length)], linkPoint.position, linkPoint.rotation);
                         pathLinkedList.AddLast(path);
                         last_path = pathLinkedList.Last.Value;
                     }
                     break;
                 case 1:
                 case 2:
+                    // 生成拐角
                     int i = 0;
                     while(i < generateCount)
                     {
                         GameObject cornerPrefab = pathPrefabs[UnityEngine.Random.Range(0, pathPrefabs.Length)];
-                        // 获取cornerPrefab下LinkPoint object的角度
                         Transform cornerLinkPoint = cornerPrefab.transform.Find("LinkPoint");
                         float y_rotation = cornerLinkPoint.rotation.eulerAngles.y;
                         y_rotation = y_rotation > 180 ? y_rotation - 360 : y_rotation;
-                        if (Math.Abs(y_rotation + turnAngle) <= 90)
+                        // 避免拐角超过90度，超过90度可能导致路径重叠
+                        if (Math.Abs(y_rotation + GeneratorTool.turnAngle) <= 90)
                         {
                             Transform linkPoint = last_path.transform.Find("LinkPoint");
-                            GameObject path = Instantiate(cornerPrefab, linkPoint.position, linkPoint.rotation);
+                            GameObject path = InstantiatePath(cornerPrefab, linkPoint.position, linkPoint.rotation);
                             pathLinkedList.AddLast(path);
                             last_path = pathLinkedList.Last.Value;
-                            turnAngle += y_rotation;
+                            GeneratorTool.turnAngle += y_rotation;
                             i++;
                         }
                         else
@@ -211,22 +211,23 @@ namespace RoadGenerator{
                     }
                     break;
                 case 6:
+                    // 生成桥
                     GameObject bridgeStartPrefab = bridgeStart[UnityEngine.Random.Range(0, bridgeStart.Length)];
                     Transform bridgeStartLinkPoint = bridgeStartPrefab.transform.Find("LinkPoint");
-                    GameObject bridgeStartPath = Instantiate(bridgeStartPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
+                    GameObject bridgeStartPath = InstantiatePath(bridgeStartPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
                     pathLinkedList.AddLast(bridgeStartPath);
                     last_path = pathLinkedList.Last.Value;
                     for (int j = 0; j < UnityEngine.Random.Range(1, 5); j++)
                     {
                         GameObject bridgePartPrefab = bridgePart[UnityEngine.Random.Range(0, bridgePart.Length)];
                         Transform bridgePartLinkPoint = bridgePartPrefab.transform.Find("LinkPoint");
-                        GameObject bridgePartPath = Instantiate(bridgePartPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
+                        GameObject bridgePartPath = InstantiatePath(bridgePartPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
                         pathLinkedList.AddLast(bridgePartPath);
                         last_path = pathLinkedList.Last.Value;
                     }
                     GameObject bridgeEndPrefab = bridgeEnd[UnityEngine.Random.Range(0, bridgeEnd.Length)];
                     Transform bridgeEndLinkPoint = bridgeEndPrefab.transform.Find("LinkPoint");
-                    GameObject bridgeEndPath = Instantiate(bridgeEndPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
+                    GameObject bridgeEndPath = InstantiatePath(bridgeEndPrefab, last_path.transform.Find("LinkPoint").position, last_path.transform.Find("LinkPoint").rotation);
                     pathLinkedList.AddLast(bridgeEndPath);
                     last_path = pathLinkedList.Last.Value;
                     break;
@@ -236,19 +237,48 @@ namespace RoadGenerator{
             }
             if(pathLinkedList.Count < pathCount)
             {
+                // 避免连续生成相同的路径
                 pathTypes[lastPathType].nowWeight = pathTypes[lastPathType].initWeight;
                 pathTypes[pathType].nowWeight = 0;
             }
         }
 
+        // 实例化路径方块
+        GameObject InstantiatePath(GameObject Prefab, Vector3 position, Quaternion rotation)
+        {
+            GameObject path = Instantiate(Prefab, position, rotation);
+            // 生成两侧的装饰物
+            DecorOnBothSidesGenertor generator = this.gameObject.GetComponent<DecorOnBothSidesGenertor>();
+            if (generator != null)
+            {
+                generator.GenerateDecorOnBothSidesDecor(path);
+            }
+            else
+            {
+                Debug.LogError("未能找到DecorOnBothSidesGenertor组件");
+            }
+            return path;
+        }
 
-        void GeneratePaths(){
+        IEnumerator GeneratePaths()
+        {
             GenerateStartPath();
             int times = 0;
-            while(pathLinkedList.Count < pathMaxCount && times < 200)
+            while (pathLinkedList.Count < pathMaxCount && times < 200)
             {
                 times++;
-                GeneratePath();
+                Debug.Log($"生成第{pathLinkedList.Count}个路径");
+                try
+                {
+                    GeneratePath();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"生成路径时发生异常: {e.Message}");
+                    break;
+                }
+                // 延迟一下，一次生成太多会卡
+                yield return new WaitForSeconds((float)Math.Round(times * 0.03f, 2));
             }
         }
 
