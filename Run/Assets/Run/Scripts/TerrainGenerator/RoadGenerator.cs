@@ -74,16 +74,17 @@ namespace TerrainGenerator{
         public GameObject[] bridgeEnd;
 
         private pathType[] pathTypes;
+        private float pathLength = 0.0f;
 
         // Start is called before the first frame update
         void Start()
         {
             pathTypes = new pathType[]{
                 new pathType("Straight", pathStraightPrefab, 50, 6, 2),
-                new pathType("Corner", pathCornerPrefab, 20, 2),
-                new pathType("CornerLeft", pathCornerLeftPrefab, 20, 2),
-                new pathType("Slope", pathSlopePrefab, 5, 6, 5),
-                new pathType("SlopeDown", pathSlopeDownPrefab, 5, 6, 2),
+                new pathType("Corner", pathCornerPrefab, 15, 2),
+                new pathType("CornerLeft", pathCornerLeftPrefab, 15, 2),
+                new pathType("Slope", pathSlopePrefab, 15, 8, 5),
+                new pathType("SlopeDown", pathSlopeDownPrefab, 15, 8, 5),
                 new pathType("Platform", pathPlatformPrefab, 5),
                 new pathType("Bridge", bridgeStart, 10)
             };
@@ -151,10 +152,11 @@ namespace TerrainGenerator{
         }
 
         // 生成起始路径方块
-        void GenerateStartPath()
+        GameObject GenerateStartPath()
         {
             GameObject startPath = Instantiate(pathStartPrefab[UnityEngine.Random.Range(0, pathStartPrefab.Length)], new Vector3(0, 0, 0), Quaternion.identity);
             pathLinkedList.AddLast(startPath);
+            return startPath;
         }
 
         // 生成路径方块
@@ -247,6 +249,7 @@ namespace TerrainGenerator{
         GameObject InstantiatePath(GameObject Prefab, Vector3 position, Quaternion rotation)
         {
             GameObject path = Instantiate(Prefab, position, rotation);
+            this.pathLength += GeneratorTool.GetPathLength(path);
             // 生成两侧的装饰物
             DecorOnBothSidesGenertor generator = this.gameObject.GetComponent<DecorOnBothSidesGenertor>();
             if (generator != null)
@@ -257,17 +260,27 @@ namespace TerrainGenerator{
             {
                 Debug.LogError("未能找到DecorOnBothSidesGenertor组件");
             }
+            DectorAndTrapOnRoadbedGenertor dectorAndTrapGenerator = this.gameObject.GetComponent<DectorAndTrapOnRoadbedGenertor>();
+            if (dectorAndTrapGenerator != null)
+            {
+                dectorAndTrapGenerator.GenerateDecorAndTrapOnRoadbed(path);
+            }
+            else
+            {
+                Debug.LogError("未能找到DectorAndTrapOnRoadbedGenertor组件");
+            }
             return path;
         }
 
         IEnumerator GeneratePaths()
         {
-            GenerateStartPath();
+            GameObject startPath = GenerateStartPath();
+            this.pathLength = GeneratorTool.GetPathLength(startPath);
             int times = 0;
             while (pathLinkedList.Count < pathMaxCount && times < 200)
             {
                 times++;
-                Debug.Log($"生成第{pathLinkedList.Count}个路径");
+                //Debug.Log($"生成第{pathLinkedList.Count}个路径");
                 try
                 {
                     GeneratePath();

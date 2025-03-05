@@ -122,37 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &67621143
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 67621144}
-  m_Layer: 0
-  m_Name: GameObject (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &67621144
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 67621143}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -54, y: 0, z: 54}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &493016724
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,6 +229,7 @@ GameObject:
   - component: {fileID: 844503746}
   - component: {fileID: 844503749}
   - component: {fileID: 844503750}
+  - component: {fileID: 844503751}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -419,6 +389,56 @@ MonoBehaviour:
   sizeThreePrefabs:
   - {fileID: 8519175224815610398, guid: 0c63d750fa2e4b147b4f56a5b5e44ccd, type: 3}
   - {fileID: 1715498592084272707, guid: 6171dd70fd4385b46923081e8921b376, type: 3}
+--- !u!114 &844503751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844503745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5fe1f523d8e9324fb5654cd2b7355ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grassPrefabs:
+  - {fileID: 7704234721875954806, guid: 80af8fd4518cb7d4e986f508df20ff06, type: 3}
+  - {fileID: 2344495925534649199, guid: dd6e75c744d789b4c93b0027db77bbdd, type: 3}
+  - {fileID: 6859054420820891214, guid: 1a2d2aafcd941f34ab144bb0c96e7f7e, type: 3}
+  - {fileID: 5443484466699256745, guid: 039a5d024f0cec54aafae8f2aece60f5, type: 3}
+  - {fileID: 1168244626294233057, guid: ad00a24b4c57912468ebd95bd9c54ea1, type: 3}
+  - {fileID: 9031356500027535623, guid: 14ae25b798abb6941b95c5296d12c2f6, type: 3}
+  - {fileID: 4486368645528020670, guid: 53dbd26503316d94fba40cfa209bb3e7, type: 3}
+  - {fileID: 7060351295797825263, guid: 0615732d23f61c849b0b3a8285b01608, type: 3}
+  slabStonePrefabs:
+  - {fileID: 1607002502792089032, guid: bc25cb161c4096d40878d1d0d611ef41, type: 3}
+  - {fileID: 1780115831255692475, guid: 138ff85e897c51444a91a9cbd0e25e05, type: 3}
+  - {fileID: 1330589584952993147, guid: 3ab50b48180f63042aac752513bde94c, type: 3}
+  - {fileID: 6593399821987340149, guid: 7bc00d263f4c02c4a94963cc6d4b628b, type: 3}
+  - {fileID: 3132184029416128902, guid: e543f3dd81a797446906c28fa258b81e, type: 3}
+  trapBladePrefabs:
+  - {fileID: 6012224602702871215, guid: 535e46622775be648917bcb5ad131f49, type: 3}
+  - {fileID: 5539295840614030481, guid: 8f74a4b600d90fa4799a453f56e34327, type: 3}
+  - {fileID: 7757099032191150371, guid: 15ff353b7fa304546832ec183917c03b, type: 3}
+  - {fileID: 3554245040174735184, guid: 143f7024a6e4b9f428e7f42b1461d36e, type: 3}
+  - {fileID: 3190189766992050975, guid: f0f7cb978f75f6949a48cc8df522fc75, type: 3}
+  - {fileID: 8021567053156481434, guid: 791cb76c7e7172044a434448b40fffc9, type: 3}
+  trapDispenserPrefabs:
+  - {fileID: 5758885308906111369, guid: 6a43d41228d07ac489fed199abdeafde, type: 3}
+  - {fileID: 2754091541656133812, guid: b0ef5a9490c603b46b4a2fceab3b23a1, type: 3}
+  trapHangSawPrefabs:
+  - {fileID: 8908094818277424336, guid: d73a5fcfba0ebb54ba17d954654dbe19, type: 3}
+  - {fileID: 2048130570407937516, guid: 40ac8d21133791a4aa137352d0b3f7f4, type: 3}
+  trapPressurePrefabs:
+  - {fileID: 7537655210157495281, guid: a7d87441e0e873a4e8ae757f28aca93b, type: 3}
+  - {fileID: 5510064598448783832, guid: c6ff9b91513e6534ab8952bbfea29d0d, type: 3}
+  trapSawPrefabs:
+  - {fileID: 781635549944622688, guid: 701e17d3d69a82746a2bf3f783259717, type: 3}
+  trapSpikePrefabs:
+  - {fileID: 6555046783202509532, guid: a5547a3f2673a404ba5340cd05e92470, type: 3}
+  trapStoneObstaklePrefabs:
+  - {fileID: 7843745698971161936, guid: f12fb6298a696f847846b1dfb57aa358, type: 3}
+  - {fileID: 4601184289848436046, guid: 5a0afff053994b841a6070d515a9076a, type: 3}
 --- !u!1001 &2106534645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -499,4 +519,3 @@ SceneRoots:
   - {fileID: 844503748}
   - {fileID: 493016726}
   - {fileID: 2106534645}
-  - {fileID: 67621144}

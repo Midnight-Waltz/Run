@@ -359,6 +359,7 @@
 -analyzer:"D:/software/unity_editor/2022.3.44f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"D:/software/unity_editor/2022.3.44f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Run/Scripts/TerrainGenerator/DecorOnBothSidesGenertor.cs"
+"Assets/Run/Scripts/TerrainGenerator/DectorAndTrapOnRoadbedGenertor.cs"
 "Assets/Run/Scripts/TerrainGenerator/GeneratorTool.cs"
 "Assets/Run/Scripts/TerrainGenerator/RoadGenerator.cs"
 "Assets/Run/Scripts/Tool/ToolClass.cs"

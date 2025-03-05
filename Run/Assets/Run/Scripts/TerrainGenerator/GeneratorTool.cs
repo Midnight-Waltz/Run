@@ -38,6 +38,21 @@ namespace TerrainGenerator
 
         }
 
+        // 标准化角度 -180~180
+        static public float NormalizeAngle(float angle)
+        {
+            angle = angle % 360;
+            if (angle > 180)
+            {
+                angle -= 360;
+            }
+            else if (angle < -180)
+            {
+                angle += 360;
+            }
+            return angle;
+        }
+
         /// <summary>
         /// 获取路径点
         /// </summary>
@@ -50,8 +65,7 @@ namespace TerrainGenerator
         {
             List<Vector3> pathPoints = new List<Vector3>();
             Transform linkPoint = pathObject.transform.Find("LinkPoint");
-            float y_rotation = linkPoint.rotation.eulerAngles.y;
-            y_rotation = y_rotation > 180 ? y_rotation - 360 : y_rotation;
+            float y_rotation = NormalizeAngle(linkPoint.rotation.eulerAngles.y);
             Vector3 start = pathObject.transform.position + pathObject.transform.forward * startOffset[1] + pathObject.transform.right * startOffset[0];
             Vector3 end = linkPoint.position + linkPoint.forward * endOffset[1] + linkPoint.right * endOffset[0];
             string pathType = pathObject.name;
@@ -147,7 +161,7 @@ namespace TerrainGenerator
         /// <param name="end"> 终点</param>
         /// <param name="interval"> 间隔</param>
         /// <param name="offset"> 偏移</param>"
-        /// /// </summary>
+        ///  </summary>
         static List<Vector3> GetStraightPathPoint(Vector3 start, Vector3 end, float interval, float offset)
         {
             // 计算直道的长度
@@ -164,6 +178,30 @@ namespace TerrainGenerator
                 pathPoints.Add(point);
             }
             return pathPoints;
+        }
+
+        /// <summary>
+        /// 获取路径长度
+        /// <param name="pathObject"> 路径对象</param>
+        /// </summary>
+        static public float GetPathLength(GameObject pathObject)
+        {
+            Transform linkPoint = pathObject.transform.Find("LinkPoint");
+            float y_rotation = NormalizeAngle(linkPoint.rotation.eulerAngles.y);
+            Vector3 start = pathObject.transform.position;
+            Vector3 end = linkPoint.position;
+            string pathType = pathObject.name;
+            if (pathType.Contains("Corner"))
+            {
+                float angle = GeneratorTool.turnAngle - y_rotation;
+                float radius = Vector3.Distance(start, end) / Mathf.Sin(angle * Mathf.Deg2Rad / 2);
+                float arcLength = angle * Mathf.Deg2Rad * radius;
+                return arcLength;
+            }
+            else
+            {
+                return Vector3.Distance(start, end);
+            }
         }
     }
 }

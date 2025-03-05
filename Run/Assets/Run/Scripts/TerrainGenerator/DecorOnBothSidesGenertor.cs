@@ -45,7 +45,7 @@ namespace TerrainGenerator {
         {
             this.decorList = new DecorOnBothSidesDecor[]
             {
-                new DecorOnBothSidesDecor("null", null, 45, 1, 4),
+                new DecorOnBothSidesDecor("null", null, 50, 1, 4),
                 new DecorOnBothSidesDecor("sizeOne", this.sizeOnePrefabs, 15, 1),
                 new DecorOnBothSidesDecor("sizeTwo", this.sizeTwoPrefabs, 1, 2, 2),
                 new DecorOnBothSidesDecor("sizeThree", this.sizeThreePrefabs, 1, 3)
@@ -126,7 +126,6 @@ namespace TerrainGenerator {
                 }
             }
         }
-
 
         // 生成两侧的装饰物
         public void GenerateDecorOnBothSidesDecor(GameObject pathObject)
